@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +23,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private  RecyclerView recyclerView;
-    private List<PlaceHolder> listPlace = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private List<PlaceHolder> listPlaceHolder = new ArrayList<>();
     private Retrofit retrofit;
 
     @Override
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void delayParaCarregarRecycler() {
         new Handler().postDelayed(() -> {
-            Adapter adapter = new Adapter(listPlace);
+            Adapter adapter = new Adapter(listPlaceHolder);
             configuraRecyclerView(adapter);
 
         }, 2900);
@@ -61,40 +60,35 @@ public class MainActivity extends AppCompatActivity {
 
     private void retrofit() {
         retrofit = new Retrofit.Builder()
-                .baseUrl("https://jsonplaceholder.typicode.com/")
+                .baseUrl("https://jsonplaceholder.typicode.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
 
     private void recuperarListaRetrofit() {
 
-        PlaceService placeService  = retrofit.create(PlaceService.class);
-        Call<PlaceHolder> requestPlace = placeService.listPlace();
+        PlaceService service = retrofit.create(PlaceService.class);
+        Call<List<PlaceHolder>> requestPlace = service.listPlace();
 
-        requestPlace.enqueue(new Callback<PlaceHolder>() {
+        requestPlace.enqueue(new Callback<List<PlaceHolder>>() {
             @Override
-            public void onResponse(Call<PlaceHolder> call, Response<PlaceHolder> response) {
-                if (response.isSuccessful()){
-                    PlaceHolder placeLista = response.body();
+            public void onResponse(Call<List<PlaceHolder>> call, Response<List<PlaceHolder>> response) {
+                if (response.isSuccessful()) {
+                    listPlaceHolder = response.body();
 
-                   // for (int i = 0; i < 10; i++){
-                        String titlePlace = placeLista.getTitle();
-                        String imagePlace = placeLista.getUrl();
-                            Log.i("TESTE", titlePlace);
+                    for (int i = 0; i < listPlaceHolder.size(); i++) {
+                        PlaceHolder place = listPlaceHolder.get(i);
+                        Log.i("API PLACE", "Title: " + place.getTitle());
 
-                        PlaceHolder placeHolder = new PlaceHolder(titlePlace, imagePlace);
-                        //PlaceHolder placeHolder = new PlaceHolder(titlePlace);
-                        listPlace.add(placeHolder);
-                   // }
+                    }
 
                 }
             }
 
             @Override
-            public void onFailure(Call<PlaceHolder> call, Throwable t) {
+            public void onFailure(Call<List<PlaceHolder>> call, Throwable t) {
 
             }
         });
-
     }
 }
