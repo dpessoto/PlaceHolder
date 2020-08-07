@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +25,14 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private List<PlaceHolder> listPlaceHolder = new ArrayList<>();
-    private List<PlaceHolder> listPlaceHolderFinal = new ArrayList<>();
     private Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toast.makeText(getApplicationContext(), "Carregando...", Toast.LENGTH_SHORT).show();
 
         inicializarComponentes();
         retrofit();
@@ -46,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void delayParaCarregarRecycler() {
         new Handler().postDelayed(() -> {
-            Adapter adapter = new Adapter(listPlaceHolderFinal);
+            Adapter adapter = new Adapter(listPlaceHolder);
             configuraRecyclerView(adapter);
 
-        }, 2900);
+        }, 1000);
     }
 
     private void configuraRecyclerView(Adapter adapter) {
@@ -75,18 +76,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<PlaceHolder>> call, Response<List<PlaceHolder>> response) {
                 if (response.isSuccessful()) {
+
                     listPlaceHolder = response.body();
-
-                   for (int i = 0; i < 10; i++) {
-                        PlaceHolder place = listPlaceHolder.get(i);
-
-                        String title = place.getTitle();
-                        String image = place.getUrl();
-
-                        place = new PlaceHolder(title, image);
-                       listPlaceHolderFinal.add(place);
-
-                    }
 
                 }
             }
