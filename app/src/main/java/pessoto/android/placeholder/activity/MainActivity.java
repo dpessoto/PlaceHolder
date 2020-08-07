@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private List<PlaceHolder> listPlaceHolder = new ArrayList<>();
+    private List<PlaceHolder> listPlaceHolderFinal = new ArrayList<>();
     private Retrofit retrofit;
 
     @Override
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void delayParaCarregarRecycler() {
         new Handler().postDelayed(() -> {
-            Adapter adapter = new Adapter(listPlaceHolder);
+            Adapter adapter = new Adapter(listPlaceHolderFinal);
             configuraRecyclerView(adapter);
 
         }, 2900);
@@ -76,9 +77,14 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     listPlaceHolder = response.body();
 
-                    for (int i = 0; i < listPlaceHolder.size(); i++) {
+                   for (int i = 0; i < 10; i++) {
                         PlaceHolder place = listPlaceHolder.get(i);
-                        Log.i("API PLACE", "Title: " + place.getTitle());
+
+                        String title = place.getTitle();
+                        String image = place.getUrl();
+
+                        place = new PlaceHolder(title, image);
+                       listPlaceHolderFinal.add(place);
 
                     }
 
