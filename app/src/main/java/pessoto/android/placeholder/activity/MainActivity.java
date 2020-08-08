@@ -13,14 +13,18 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pessoto.android.placeholder.R;
 import pessoto.android.placeholder.adapter.Adapter;
+import pessoto.android.placeholder.fragments.QuantidadeFragment;
 import pessoto.android.placeholder.model.PlaceHolder;
 import pessoto.android.placeholder.service.PlaceService;
 import retrofit2.Call;
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private List<PlaceHolder> listPlaceHolder = new ArrayList<>();
     private Retrofit retrofit;
     private ProgressBar progressBar;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
         inicializarComponentes();
         verificaConexao();
-
+        definirQuantidadeDeItens();
     }
 
     private void inicializarComponentes() {
         recyclerView = findViewById(R.id.recyclerView);
         progressBar = findViewById(R.id.progressBar);
+        floatingActionButton = findViewById(R.id.floatingAction);
     }
 
     private void delayParaCarregarRecycler() {
@@ -82,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<PlaceHolder>> call, Response<List<PlaceHolder>> response) {
                 if (response.isSuccessful()) {
+                    floatingActionButton.setVisibility(View.VISIBLE);
                     listPlaceHolder = response.body();
                 }
             }
@@ -126,5 +133,27 @@ public class MainActivity extends AppCompatActivity {
             alert.create();
             alert.show();
         }
+    }
+
+    public void definirQuantidadeDeItens(){
+
+        floatingActionButton.setOnClickListener(v -> {
+            QuantidadeFragment quantidadeFragment = new QuantidadeFragment();
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame, quantidadeFragment);
+            transaction.addToBackStack(null).commit();
+
+            floatingActionButton.setVisibility(View.INVISIBLE);
+        });
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
+        floatingActionButton.setVisibility(View.VISIBLE);
     }
 }

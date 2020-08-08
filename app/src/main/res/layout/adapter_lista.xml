@@ -7,7 +7,7 @@
     android:layout_marginTop="8dp"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="8dp"
-    android:background="@drawable/background_caixa_texto3"
+    android:background="@drawable/background_degrade2"
     android:orientation="vertical">
 
     <LinearLayout
