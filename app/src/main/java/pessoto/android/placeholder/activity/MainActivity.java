@@ -1,6 +1,7 @@
 package pessoto.android.placeholder.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -59,7 +60,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void delayParaCarregarRecycler() {
         new Handler().postDelayed(() -> {
-            Adapter adapter = new Adapter(listPlaceHolder);
+
+            Intent intent = getIntent();
+            int quantidade = intent.getIntExtra("quantidade", 10);
+
+            Adapter adapter = new Adapter(listPlaceHolder, quantidade);
             configuraRecyclerView(adapter);
             progressBar.setVisibility(View.INVISIBLE);
         }, 2000);
@@ -80,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void recuperarListaRetrofit() {
-
         PlaceService service = retrofit.create(PlaceService.class);
         Call<List<PlaceHolder>> requestPlace = service.listPlace();
 
@@ -102,8 +106,6 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void verificaConexao() {
-
-
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo net = cm.getActiveNetworkInfo();
 
@@ -135,8 +137,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void definirQuantidadeDeItens(){
-
+    public void definirQuantidadeDeItens() {
         floatingActionButton.setOnClickListener(v -> {
             QuantidadeFragment quantidadeFragment = new QuantidadeFragment();
 
@@ -144,16 +145,11 @@ public class MainActivity extends AppCompatActivity {
             transaction.replace(R.id.frame, quantidadeFragment);
             transaction.addToBackStack(null).commit();
 
-            floatingActionButton.setVisibility(View.INVISIBLE);
         });
-
-
     }
 
     @Override
     public void onBackPressed() {
 
-        super.onBackPressed();
-        floatingActionButton.setVisibility(View.VISIBLE);
     }
 }

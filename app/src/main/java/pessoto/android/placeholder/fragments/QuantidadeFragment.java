@@ -1,59 +1,36 @@
 package pessoto.android.placeholder.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import pessoto.android.placeholder.R;
+import pessoto.android.placeholder.activity.MainActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link QuantidadeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class QuantidadeFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private EditText quantidade;
+    private ImageButton enviar;
+    private ImageButton fechar;
+    private int quantidadeInt;
 
     public QuantidadeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment QuantidadeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static QuantidadeFragment newInstance(String param1, String param2) {
-        QuantidadeFragment fragment = new QuantidadeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
@@ -61,6 +38,47 @@ public class QuantidadeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_quantidade, container, false);
+        View view = inflater.inflate(R.layout.fragment_quantidade, container, false);
+
+        quantidade = view.findViewById(R.id.editTextQuantidade);
+        enviar = view.findViewById(R.id.btnEnviar);
+        fechar = view.findViewById(R.id.btnClose);
+
+        definirQuantidadeItens();
+
+        fecharFragment();
+
+        return view;
     }
+
+    private void fecharFragment() {
+        fechar.setOnClickListener(v -> {
+            getActivity().getSupportFragmentManager().popBackStack();
+        });
+    }
+
+    private void definirQuantidadeItens() {
+        enviar.setOnClickListener(v -> {
+
+            if (quantidade.getText().length() == 0) {
+                quantidadeInt = 10;
+                getActivity().getSupportFragmentManager().popBackStack();
+            } else {
+                quantidadeInt = Integer.parseInt(quantidade.getText().toString());
+
+                if (quantidadeInt > 5000 || quantidadeInt < 1)
+                    Toast.makeText(getActivity(), "A quantidade de itens tem que ser entre 1 e 5000!!!", Toast.LENGTH_LONG).show();
+
+                else {
+
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.putExtra("quantidade", quantidadeInt);
+
+                    startActivity(intent);
+                }
+            }
+
+        });
+    }
+
 }

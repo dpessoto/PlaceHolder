@@ -19,9 +19,11 @@ import pessoto.android.placeholder.model.PlaceHolder;
 public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     private List<PlaceHolder> listaPlace;
+    private int quantidadeItens;
 
-    public Adapter(List<PlaceHolder> lista) {
+    public Adapter(List<PlaceHolder> lista, int quantidade) {
         listaPlace = lista;
+        quantidadeItens = quantidade;
     }
 
     @NonNull
@@ -47,7 +49,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 10;
+        return quantidadeItens;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

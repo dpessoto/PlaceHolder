@@ -11,8 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:background="@drawable/background_degrade3"
+        android:background="@drawable/background_caixa"
         android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/cardview_shadow_end_color"
+            android:src="@android:drawable/ic_delete" />
 
         <TextView
             android:id="@+id/textView"
@@ -28,22 +35,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="5dp">
 
             <EditText
-                android:id="@+id/editTextNumber"
+                android:id="@+id/editTextQuantidade"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
+                android:background="@drawable/background_botao"
                 android:ems="10"
-                android:inputType="number" />
+                android:hint="ex: 500"
+                android:inputType="number"
+                android:padding="5dp"
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/darker_gray" />
 
-            <ImageView
-                android:id="@+id/imageView"
+            <ImageButton
+                android:id="@+id/btnEnviar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:src="@android:drawable/ic_menu_send" />
+                android:background="@drawable/background_botao"
+                android:src="@android:drawable/ic_menu_send"
+                android:text="Button" />
+
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
