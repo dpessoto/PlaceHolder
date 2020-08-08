@@ -1,12 +1,20 @@
 package pessoto.android.placeholder.activity;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.os.Handler;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,31 +34,29 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<PlaceHolder> listPlaceHolder = new ArrayList<>();
     private Retrofit retrofit;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toast.makeText(getApplicationContext(), "Carregando...", Toast.LENGTH_SHORT).show();
-
         inicializarComponentes();
-        retrofit();
-        recuperarListaRetrofit();
-        delayParaCarregarRecycler();
+        verificaConexao();
 
     }
 
     private void inicializarComponentes() {
         recyclerView = findViewById(R.id.recyclerView);
+        progressBar = findViewById(R.id.progressBar);
     }
 
     private void delayParaCarregarRecycler() {
         new Handler().postDelayed(() -> {
             Adapter adapter = new Adapter(listPlaceHolder);
             configuraRecyclerView(adapter);
-
-        }, 1000);
+            progressBar.setVisibility(View.INVISIBLE);
+        }, 2000);
     }
 
     private void configuraRecyclerView(Adapter adapter) {
@@ -76,16 +82,49 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<PlaceHolder>> call, Response<List<PlaceHolder>> response) {
                 if (response.isSuccessful()) {
-
                     listPlaceHolder = response.body();
-
                 }
             }
 
             @Override
             public void onFailure(Call<List<PlaceHolder>> call, Throwable t) {
-
+                progressBar.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void verificaConexao() {
+
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo net = cm.getActiveNetworkInfo();
+
+        if (net != null && net.isConnectedOrConnecting()) {
+
+            retrofit();
+
+            recuperarListaRetrofit();
+
+            delayParaCarregarRecycler();
+
+        } else {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("Sem conexão com a internet");
+            alert.setIcon(R.mipmap.ic_launcher);
+            alert.setMessage("Precisamos de conexão com a internet. Por favor, ative e tente novamente");
+            alert.setCancelable(false);
+            alert.setPositiveButton("TENTAR NOVAMENTE", (dialogInterface, i) -> verificaConexao());
+
+            alert.setNegativeButton("FECHAR", (dialogInterface, i) -> {
+                Toast.makeText(getApplicationContext(),
+                        "Tente mais tarde",
+                        Toast.LENGTH_LONG).show();
+                finishAffinity();
+            });
+
+            alert.create();
+            alert.show();
+        }
     }
 }
