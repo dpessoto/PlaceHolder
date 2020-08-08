@@ -40,15 +40,19 @@ public class QuantidadeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_quantidade, container, false);
 
-        quantidade = view.findViewById(R.id.editTextQuantidade);
-        enviar = view.findViewById(R.id.btnEnviar);
-        fechar = view.findViewById(R.id.btnClose);
+        inicializarComponentes(view);
 
         definirQuantidadeItens();
 
         fecharFragment();
 
         return view;
+    }
+
+    private void inicializarComponentes(View view) {
+        quantidade = view.findViewById(R.id.editTextQuantidade);
+        enviar = view.findViewById(R.id.btnEnviar);
+        fechar = view.findViewById(R.id.btnClose);
     }
 
     private void fecharFragment() {
@@ -61,7 +65,6 @@ public class QuantidadeFragment extends Fragment {
         enviar.setOnClickListener(v -> {
 
             if (quantidade.getText().length() == 0) {
-                quantidadeInt = 10;
                 getActivity().getSupportFragmentManager().popBackStack();
             } else {
                 quantidadeInt = Integer.parseInt(quantidade.getText().toString());
