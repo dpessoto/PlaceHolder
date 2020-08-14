@@ -118,22 +118,20 @@ public class MainActivity extends AppCompatActivity {
             delayParaCarregarRecycler();
 
         } else {
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setTitle("Sem conexão com a internet");
-            alert.setIcon(R.mipmap.ic_launcher);
-            alert.setMessage("Precisamos de conexão com a internet. Por favor, ative e tente novamente");
-            alert.setCancelable(false);
-            alert.setPositiveButton("TENTAR NOVAMENTE", (dialogInterface, i) -> verificaConexao());
-
-            alert.setNegativeButton("FECHAR", (dialogInterface, i) -> {
+            new AlertDialog.Builder(this)
+            .setTitle("Sem conexão com a internet")
+            .setIcon(R.mipmap.ic_launcher)
+            .setMessage("Precisamos de conexão com a internet. Por favor, ative e tente novamente")
+            .setCancelable(false)
+            .setPositiveButton("TENTAR NOVAMENTE", (dialogInterface, i) -> verificaConexao())
+            .setNegativeButton("FECHAR", (dialogInterface, i) -> {
                 Toast.makeText(getApplicationContext(),
                         "Tente mais tarde",
                         Toast.LENGTH_LONG).show();
                 finishAffinity();
-            });
-
-            alert.create();
-            alert.show();
+            })
+            .create()
+            .show();
         }
     }
 
